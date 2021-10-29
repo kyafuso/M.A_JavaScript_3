@@ -1,13 +1,13 @@
 const todoList = []
 
-const onClickAdd = () => {
-    const addText = document.getElementById('add-text').value;
-    document.getElementById('add-text').value = '';
-    createTodolist(addText);
+const addTodo = () => {
+    const todo = document.getElementById('add-todo').value;
+    document.getElementById('add-todo').value = '';
+    createTodo(todo);
 }
 
-const createTodolist = (todo) => {
-    todoList.push(todo)
+const createTodo = (todo) => {
+    todoList.push({comment: todo, status: '作業中'});
     
     const tbody = document.getElementsByTagName('tbody')[0];
 
@@ -20,14 +20,10 @@ const createTodolist = (todo) => {
     tdComment.innerHTML = todo;
     
     const tdStatus = document.createElement('td');
-    const statusButton = document.createElement('button');
-    statusButton.innerText = '作業中';
-    tdStatus.appendChild(statusButton);
+    createStatusButton(tdStatus);
 
     const tdDelete = document.createElement('td');
-    const deleteButton = document.createElement('button');
-    deleteButton.innerText = '削除';
-    tdDelete.appendChild(deleteButton);
+    createDeleteButton(tdDelete);
 
     tr.appendChild(tdId);
     tr.appendChild(tdComment);
@@ -37,4 +33,16 @@ const createTodolist = (todo) => {
     tbody.appendChild(tr);
 }
 
-document.getElementById('add-button').addEventListener('click', () => onClickAdd());
+const createStatusButton = (td) => {
+    const statusButton = document.createElement('button');
+    statusButton.innerText = '作業中';
+    td.appendChild(statusButton);
+}
+
+const createDeleteButton = (td) => {
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = '削除';
+    td.appendChild(deleteButton);
+}
+
+document.getElementById('add-button').addEventListener('click', () => addTodo());
