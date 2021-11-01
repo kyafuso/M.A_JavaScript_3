@@ -20,7 +20,7 @@ const createTodo = (todo) => {
     tdComment.innerHTML = todo;
     
     const tdStatus = document.createElement('td');
-    createStatusButton(tdStatus);
+    createStatusButton(tdStatus, '作業中');
 
     const tdDelete = document.createElement('td');
     createDeleteButton(tdDelete);
@@ -35,21 +35,40 @@ const createTodo = (todo) => {
 
 const deleteFromTodoList = (todo) => {
     const tr = todo.parentNode;
-    const rowIndex = tr.sectionRowIndex
+    const rowIndex = tr.sectionRowIndex;
     tr.parentNode.deleteRow(rowIndex);
-    todoList.splice(rowIndex, 1)
+    todoList.splice(rowIndex, 1);
     
-    const table = document.getElementById('todo-table')
+    const table = document.getElementById('todo-table');
     for (let i = 1, len = todoList.length + 1; i < len; i++) {
         const tdId = table.rows[i].cells[0];
         tdId.innerHTML = i-1;
     }
 }
 
-const createStatusButton = (td) => {
+const changeStatus = (todo) => {
+    const tr = todo.parentNode;
+    const rowIndex = tr.sectionRowIndex;
+    const tdStatus = tr.cells[2];
+    tdStatus.innerHTML = '';
+
+    if (todoList[rowIndex].status === '作業中') {
+        todoList[rowIndex].status = '完了';
+        createStatusButton(tdStatus, '完了');
+    } else {
+        todoList[rowIndex].status = '作業中';        
+        createStatusButton(tdStatus, '作業中');
+    }
+}
+ 
+const createStatusButton = (td, status) => {
     const statusButton = document.createElement('button');
-    statusButton.innerText = '作業中';
+    statusButton.innerText = status;
     td.appendChild(statusButton);
+
+    statusButton.addEventListener('click', () => {
+        changeStatus(statusButton.parentNode);
+    });
 }
 
 const createDeleteButton = (td) => {
