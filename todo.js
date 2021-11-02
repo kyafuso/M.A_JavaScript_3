@@ -1,62 +1,65 @@
 const todoList = []
 
 const addTodo = () => {
-    const todo = document.getElementById('todo').value;
-    document.getElementById('todo').value = '';
-    createTodo(todo);
+    const comment = document.getElementById('comment').value;
+    document.getElementById('comment').value = '';
+    createTodo(comment);
 }
 
-const createTodo = (todo) => {
-    todoList.push({comment: todo, status: '作業中'});
+const createTodo = (comment) => {
+    todoList.push({comment: comment, status: '作業中'});
     
-    const tbody = document.getElementsByTagName('tbody')[0];
-
-    const tr = document.createElement('tr');
-    
-    const tdId = document.createElement('td');
-    tdId.innerHTML = (todoList.length - 1);
-    
-    const tdComment = document.createElement('td');
-    tdComment.innerHTML = todo;
-    
-    const tdStatus = document.createElement('td');
-    createStatusButton(tdStatus, '作業中');
-
-    const tdDelete = document.createElement('td');
-    createDeleteButton(tdDelete);
-
-    tr.appendChild(tdId);
-    tr.appendChild(tdComment);
-    tr.appendChild(tdStatus);
-    tr.appendChild(tdDelete);
-
-    tbody.appendChild(tr);
+    createTodoList();    
 }
 
-const deleteFromTodoList = (todo) => {
+const deleteTodo = (todo) => {
     const tr = todo.parentNode;
-    const rowIndex = tr.sectionRowIndex;
-    tr.parentNode.deleteRow(rowIndex);
-    todoList.splice(rowIndex, 1);
+    const index = tr.sectionRowIndex;
+    tr.parentNode.deleteRow(index);
+    todoList.splice(index, 1);
     
-    const table = document.getElementById('todo-table');
-    for (let i = 1, len = todoList.length + 1; i < len; i++) {
-        const tdId = table.rows[i].cells[0];
-        tdId.innerHTML = i-1;
-    }
+    createTodoList();
+}
+
+const createTodoList = () => {
+    const tbody = document.getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+
+    todoList.forEach((todo, index) => {
+        const tr = document.createElement('tr');
+    
+        const tdId = document.createElement('td');
+        tdId.innerHTML = index;
+        
+        const tdComment = document.createElement('td');
+        tdComment.innerHTML = todo.comment;
+        
+        const tdStatus = document.createElement('td');
+        createStatusButton(tdStatus, todo.status);
+
+        const tdDelete = document.createElement('td');
+        createDeleteButton(tdDelete);
+
+        tr.appendChild(tdId);
+        tr.appendChild(tdComment);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdDelete);
+
+        tbody.appendChild(tr);
+    });
 }
 
 const changeStatus = (todo) => {
     const tr = todo.parentNode;
-    const rowIndex = tr.sectionRowIndex;
+    const index = tr.sectionRowIndex;
     const tdStatus = tr.cells[2];
     tdStatus.innerHTML = '';
 
-    if (todoList[rowIndex].status === '作業中') {
-        todoList[rowIndex].status = '完了';
+    if (todoList[index].status === '作業中') {
+        todoList[index].status = '完了';
         createStatusButton(tdStatus, '完了');
     } else {
-        todoList[rowIndex].status = '作業中';        
+        todoList[index].status = '作業中';        
         createStatusButton(tdStatus, '作業中');
     }
 }
@@ -77,7 +80,7 @@ const createDeleteButton = (td) => {
     td.appendChild(deleteButton);
 
     deleteButton.addEventListener('click', () => {
-        deleteFromTodoList(deleteButton.parentNode);
+        deleteTodo(deleteButton.parentNode);
     });
 }
 
