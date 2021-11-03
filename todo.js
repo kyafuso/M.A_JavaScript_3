@@ -45,7 +45,22 @@ const createTodoList = () => {
         tr.appendChild(tdStatus);
         tr.appendChild(tdDelete);
 
+        if (todo.status === '作業中') {
+            tr.classList.add('todo-working');
+            //tr.classList.add('todo-working').style.display = '';
+            //tr.classList.add('todo-done').style.display = 'none';
+        } else if (todo.status === '完了'){
+            tr.classList.add('todo-done');
+        }
+        
         tbody.appendChild(tr);
+    });
+
+    const radioGroup = document.getElementsByName('radio-group');
+    radioGroup.forEach((radio) => {
+        if (radio.checked) {
+            switchTodoList(radio);
+        }
     });
 }
 
@@ -58,10 +73,21 @@ const changeStatus = (todo) => {
     if (todoList[index].status === '作業中') {
         todoList[index].status = '完了';
         createStatusButton(tdStatus, '完了');
+        tr.classList.replace('todo-working', 'todo-done');
+        console.log(tr);
     } else {
         todoList[index].status = '作業中';        
         createStatusButton(tdStatus, '作業中');
+        tr.classList.replace('todo-done', 'todo-working');
+        console.log(tr);
     }
+
+    const radioGroup = document.getElementsByName('radio-group');
+    radioGroup.forEach((radio) => {
+        if (radio.checked) {
+            switchTodoList(radio);
+        }
+    });
 }
  
 const createStatusButton = (td, status) => {
@@ -84,4 +110,42 @@ const createDeleteButton = (td) => {
     });
 }
 
+const switchTodoList = (radio) => {
+    const value = radio.value;
+
+    const todoWorking = document.getElementsByClassName('todo-working');
+    const todoDone = document.getElementsByClassName('todo-done');
+
+    if(value === 'all') {        
+        for (let i = 0; i < todoWorking.length; i += 1 ){
+            todoWorking[i].style.display = '';
+        }       
+        for (let i = 0; i < todoDone.length; i += 1 ){
+            todoDone[i].style.display = '';
+        }
+    } else if(value === 'working') {
+        for (let i = 0; i < todoWorking.length; i += 1 ){
+            todoWorking[i].style.display = '';
+        }        
+        for (let i = 0; i < todoDone.length; i += 1 ){
+            todoDone[i].style.display = 'none';
+        }
+    } else if(value === 'done') {
+        for (let i = 0; i < todoWorking.length; i += 1 ){
+            todoWorking[i].style.display = 'none';
+        }        
+        for (let i = 0; i < todoDone.length; i += 1 ){
+            todoDone[i].style.display = '';
+        }
+    }
+}
+
 document.getElementById('add-button').addEventListener('click', () => addTodo());
+
+window.onload = () => {
+    const radioGroup = document.getElementsByName('radio-group');
+    
+    radioGroup.forEach((radio) => {
+        radio.addEventListener('click', () => switchTodoList(radio));
+    });
+}
